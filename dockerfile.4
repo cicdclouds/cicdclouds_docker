@@ -1,0 +1,21 @@
+# Example of Dockerfile with ADD instruction
+# docker run --name u1 -t ubuntu : at host machine
+#root3bc90v9054:#
+#root3bc90v9054:/# wget https://get.jenkins.io/war-stable/2.528.3/jenkins.war
+#output: commond not promot
+#root3bc90v9054:/# apt-install wget
+#root3bc90v9054:/# wget https://get.jenkins.io/war-stable/2.528.3/jenkins.war
+#it is okay for single operation , for more systems
+FROM ubuntu:20.04
+
+# Update package lists
+RUN apt-get update
+
+# Use ADD to fetch Jenkins WAR directly from URL
+ADD https://get.jenkins.io/war-stable/2.528.3/jenkins.war /opt/jenkins.war
+
+# Set working directory
+WORKDIR /opt
+
+#docker build -t myubuntu .
+#docker run --name u1 -it myubuntu

@@ -1,0 +1,9 @@
+# Here the example of dockerfile which not having image like ansible 
+FROM ubuntu:lastest
+RUN apt-get update
+RUN apt-get apt install software-properties-common
+RUN apt-get install ansible
+# docker build -t myansibleimage .
+# now the run  --name ansible-container -it myansibleimage  
+# now the ansible is installed as container 
+# and check the ansible version "ansible --version"

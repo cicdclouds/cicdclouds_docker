@@ -1,0 +1,30 @@
+#docker run --name j1 -d -P jenkins/jenkins
+#docker container ls
+#docker exec -it j1 bash ( it go to jenkins container  termianl )
+#Observation : 
+#1.git and maven inside the jenkins container, 
+#2.apt-get update ( this  type cannot proceed) 
+#sudo apt-get update ( this command not found)
+#3./etc/sudo ------those username are present in this file , command will works other wise denied
+#4.whoaim ---- or this container jenins has  sudo permission
+#5.su --root (if type this it ask password)
+# to solve the above problems
+# USER  root higher privilages in container 
+FROM jenkins/jenkins:latest
+USER root
+# docker build -t jenkinswithroot
+#docker run --name j2 -d -P jenkinswithroot
+# Now we can run the sudo commands inside the container
+#docker exec -it j2 bash
+#apt-get update
+#apt-get install -y maven git 
+#check the version of maven and git 
+#git --version
+#maven --version
+#
+FROM jenkins/jenkins:lastes
+USER root
+RUN apt-get update 
+RUN apt-get install -y maven git
+
+#docker built -t jenkinswithrootv2 .

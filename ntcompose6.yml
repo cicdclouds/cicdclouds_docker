@@ -1,0 +1,48 @@
+# docker network create --driver bridge --subnet 172.20.0.0/24 my_custom_network
+---
+version: '3.8'
+services:
+  mydata-base:
+     image: postgres:13
+     container_name: mydata-base
+     environment:
+        POSTGRES_USER: mydatauser
+        POSTGRES_PASSWORD: mydatapassword
+        POSTGRES_DB: mydatadb
+  myadminer:
+      image: adminer
+      container_name: myadminer
+      ports:
+          - "8080:8080"
+networks:
+    default: # <-- All services will use this network unless specified otherwise
+     external:
+       name: my_custom_network # <-- Tells Compose that the 'default' network is actually the external one
+...
+  # docker compose did not create bridge network , it creat its own network , based on folder name 
+---
+version: '3.8'
+services:
+  mydata-base:
+     image: postgres:13
+     container_name: mydata-base
+     environment:
+        POSTGRES_USER: mydatauser
+        POSTGRES_PASSWORD: mydatapassword
+        POSTGRES_DB: mydatadb
+     networks: # <-- Explicitly attaches the container to this network
+        - my_custom_network
+  myadminer:
+      image: adminer
+      container_name: myadminer
+      ports:
+        - "8080:8080"
+      networks: # <-- Explicitly attaches the container to this network
+        - my_custom_network
+networks:
+  my_custom_network: # <-- Defines the name used in the services section
+    external: true # <-- Tells Compose to look for an existing external network with this name
+...
+# In  second case networks declaration is different form first case, in first case we are redfining default network to use external networks .
+# In second case though we defining network at toplevel,it dose not mean all serivices will use it unless we explicity mention it in each service.
+

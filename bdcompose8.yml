@@ -1,0 +1,32 @@
+# Here the example of dockkerfile to customize the image
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Install required packages in one layer
+RUN apt-get update && \
+    apt-get install -y git maven openjdk-11-jdk && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch back to jenkins user
+USER jenkins
+
+docker build -t custom-jenkins:latest .
+---
+version: '3.8'
+
+services:
+  custom_jenkins:
+    build: .
+    container_name: custom-jenkins
+    ports:
+      - "8080:8080"   # Jenkins UI
+      - "50000:50000" # Jenkins agent port
+    volumes:
+      - jenkins_home:/var/jenkins_home
+
+volumes:
+  jenkins_home:
+...
+

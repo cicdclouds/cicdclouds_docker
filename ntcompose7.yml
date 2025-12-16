@@ -1,0 +1,129 @@
+---
+version: '3.8'
+services:
+  frontend:
+     image: jenkins/jenkins:lts
+     container_name: jenkins-frontend
+     ports:
+        - "8080:8080"
+     networks:
+        - jenkins_network
+        - tomee_network
+  qualityserver:
+      image: tomcat:9.0
+      container_name: quality_server
+      ports: 
+       - "9090:8080"
+      networks:
+         - tomee_network
+  prodserver:
+      image: tomcat:9.0
+      container_name: prod_server
+      ports:
+        - "7070:8080"
+      networks:
+         - tomee_network
+networks:
+   jenkins_network: {}
+   tomee_network: {}
+...
+
+# Here the real world example of ci-cd pipeline with jenkins and tomcat servers.
+version: '3.8'
+services:
+  frontend:
+     image: jenkins/jenkins:lts
+     container_name: jenkins-frontend
+     ports:
+        - "8080:8080"
+     networks:
+        - jenkins_network
+        - quality_network
+        - prod_network
+  
+  qualityserver:
+      image: tomcat:9.0
+      container_name: quality_server
+      ports: 
+       - "9090:8080"
+      networks:
+         - quality_network
+         - jenkins_network
+  prodserver:
+      image: tomcat:9.0
+      container_name: prod_server
+      ports:
+        - "7070:8080"
+      networks:
+         - prod_network
+         - jenkins_network
+networks:
+   jenkins_network: {}
+   prod_network: {}
+   quality_network: {}
+...
+# <----------------------------------------------------------------------------------->
+###############################################################3
+#<--------docker network create --driver bridge --subnet 172.20.0.0/24 jenkins_server
+#<--------docker network create --driver bridge --subnet 10.10.0.0/24 prod_server
+#<---------docker network create --driver bridge --subnet 192.22.0.0/24 qauli_server
+version: '3.8'
+
+services:
+  # ------------------------------------
+  # 1. CI/CD Server (Jenkins)
+  # ------------------------------------
+  frontend:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-frontend
+    restart: always
+    ports:
+      - "8080:8080" # Jenkins web UI
+      - "50000:50000" # JNLP port for agents
+    # Jenkins is attached to ALL three networks to enable deployment
+    networks:
+      - jenkins_server # For its own internal needs
+      - qauli_server   # To deploy to Quality server
+      - prod_server    # To deploy to Production server
+  
+  # ------------------------------------
+  # 2. Quality Assurance (QA) Server
+  # ------------------------------------
+  qualityserver:
+    image: tomcat:9.0
+    container_name: quality_server
+    ports: 
+      - "9090:8080" # Expose QA server on host port 9090
+    # QA Server is only on its own network and the Jenkins control network
+    networks:
+      - qauli_server
+      - jenkins_server # To be reachable by Jenkins using service name 'qualityserver'
+  
+  # ------------------------------------
+  # 3. Production (Prod) Server
+  # ------------------------------------
+  prodserver:
+    image: tomcat:9.0
+    container_name: prod_server
+    ports:
+      - "7070:8080" # Expose Prod server on host port 7070
+    # Prod Server is only on its own network and the Jenkins control network
+    networks:
+      - prod_server
+      - jenkins_server # To be reachable by Jenkins using service name 'prodserver'
+
+# ------------------------------------
+# Define the Networks as External
+# ------------------------------------
+networks:
+  jenkins_server:
+    external: true
+  qauli_server:
+    external: true
+  prod_server:
+    external: true
+
+# docker compose down
+# docker network ls
+# docker network rm jenkins_server prod_server qauli_server
+# docker network prune

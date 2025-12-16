@@ -1,0 +1,13 @@
+---
+version: '3.8'
+services: 
+  mydb:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: xxxxxx
+  mywordpress:
+    image: wordpress
+    ports:
+      - "8888:80"
+    depends_on:
+      - mydb

@@ -1,0 +1,12 @@
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y maven
+# docker build -t myubuntuimage  .
+# here the observation after executing the above command we create custom image of ubuntu with git and maven installed
+# this dockerfile is also available in cache memory
+RUN apt-get install -y tree
+# so dockerfile only current command  is excuted and stored in cache, after couple of months if exectue the same docker file apt-get update may not sink with current apt repository ,to need update apt repository 
+# docker build --no-cache -t myubuntuimage  . so all apt repsitory is update and new image is created.
+
+

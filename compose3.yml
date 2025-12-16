@@ -1,0 +1,26 @@
+# jenkins and Tomee docker-compose file
+---
+version: '3.8'
+services:
+    frontend_jenkins:
+      image: jenkins/jenkins:latest
+      container_name: jenkins_server
+      ports:
+         - "8080:8080"
+    frontend_Qaserver:
+      image: tomee:latest
+      container_name: Qa_server
+      ports:
+        - "9090:8080"
+      depends_on:
+        - frontend_jenkins
+    frontend_paserver:
+      image: tomee:latest
+      container_name: Pa_server
+      ports:
+        - "7070:8080"
+      depends_on:
+        - frontend_jenkins
+...
+    
+  

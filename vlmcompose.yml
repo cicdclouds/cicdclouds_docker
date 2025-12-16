@@ -1,0 +1,40 @@
+# docker network create --driver bridge --subnet 172.20.0.0/24 wordpress-net
+---
+version: '3.8'
+services:
+  cicd_database:
+    image: mysql:5.7
+    #container_name: cicd_database
+    environment:
+      MYSQL_ROOT_PASSWORD: cicdclouds
+      MYSQL_DATABASE: cicdclouds
+      MYSQL_USER: cicdclouds
+      MYSQL_PASSWORD: cicdclouds
+    volumes:
+      - cicd_database_data:/var/lib/mysql
+   
+  cicd_wordpress:
+    image: wordpress:lts
+    #container_name: cicd_wordpress
+    environment:
+      WORDPRESS_DB_HOST: cicd_database:3306
+      WORDPRESS_DB_USER: cicdclouds
+      WORDPRESS_DB_PASSWORD: cicdclouds
+      WORDPRESS_DB_NAME: cicdclouds
+    ports:
+      - "8080:80"
+    volumes:
+      - cicd_wordpress_data:/var/www/html
+networks: 
+  default:
+    external:
+      name: wordpress-net
+volumes:
+  cicd_database_data 
+  cicd_wordpress_data
+
+...
+# after deleting the container data is preserved as in volumes, this volumes are dangling  volume.
+# dangling volumes: volumes that are no longer connected to any container but still occupy disk space.
+# docker volume ls -f dangling=true      :list dangling volumes 
+# docker volume prune                    : remove all dangling volumes

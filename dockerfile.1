@@ -1,0 +1,8 @@
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y maven
+# docker build -t myubuntuimage  .
+# Note: after the above command we can create custom image of ubuntu with git and maven installed.
+# dockerfile is version control
+# after custome the docker image size is 113 as compare to original ubuntu image 454MB

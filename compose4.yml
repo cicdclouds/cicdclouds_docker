@@ -1,0 +1,30 @@
+#Linux Apache2 Mysql Php 8.2 stack with phpMyAdmin
+---
+version: '3.8'
+services:
+  database:
+      image: mysql:5.7
+      container_name: mysql_database
+      environment:
+        MYSQL_DATABASE: mysql_datebase
+        MYSQL_USER: prasad
+        MYSQL_PASSWORD: prasad123
+        MYSQL_ROOT_PASSWORD: root123
+  webserver:
+      image: php:8.2-apache
+      container_name: web_server
+      ports:
+        - "8080:80"
+      depends_on:
+        - database
+  phpMyadmin:
+      image: php:phpmyadmin/phpmyadmin
+      container_name: phpmyadmin_tool
+      ports:
+        - "8081:80"
+      depends_on:
+        - web_server
+        - database
+...
+# docker compose -f compose4.yml up -d
+# docker compose -f compose4.yml stop, start, down.
