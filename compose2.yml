@@ -2,25 +2,25 @@
 ---
 version: '3.8'
 services: 
-   debug_hub: 
+   debug-hub: 
      image: selenium/hub:latest
      container_name: selenium-hub 
      ports:
        - "4444:4444"
-   chrome_node:
-     image: selenium/node_chrome-debug:latest
-     container_name: chrome_node
+   chrome-node:
+     image: selenium/node_chrome:latest
+     container_name: chrome-node
      ports:
         - "5900:5900"
      depends_on:
-        - debug_hub
-   firefox_node:
-      image: selenium/node_firefoc-debug:latest
-      container_name: firefox_node
+        - debug-hub
+   firefox-node:
+      image: selenium/node_firefox:latest
+      container_name: firefox-node
       ports: 
          - "5901:5900"
       depends_on:
-         - debug_hub
+         - debug-hub
 ...
 
    
